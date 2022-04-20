@@ -1,3 +1,8 @@
+interface EmployeeOrManager {
+  person:Person, 
+  salary:Salary
+}
+
 //data Company = C [Dept]
 class Company {
   constructor(public dept:Dept[]) {}
@@ -12,7 +17,7 @@ enum SubUnit {
   DEPT
 }
 //data Employee = E Person Salary
-class Employee {
+class Employee implements EmployeeOrManager{
   constructor(public person:Person, public salary:Salary) {}
 }
 //data Person = P Name Address
@@ -24,7 +29,7 @@ class Salary {
   constructor(public salary:number) {}
 }
 //type Manager = Employee
-class Manager {
+class Manager implements EmployeeOrManager {
   constructor(public person:Person, public salary:Salary) {}
 }
 //type Name = String

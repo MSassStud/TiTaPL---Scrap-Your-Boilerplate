@@ -1,10 +1,10 @@
 //data Company = C [Dept]
 class Company {
-  constructor(dept:Dept[]) {}
+  constructor(public dept:Dept[]) {}
 }
 //data Dept = D Name Manager [SubUnit]
 class Dept {
-  constructor(name:Name, manager:Manager, subUnit:SubUnit[]) {}
+  constructor(public name:Name, public manager:EmployeeOrManager, public subUnit:SubUnit[]) {}
 }
 //data SubUnit = PU Employee | DU Dept
 enum SubUnit {
@@ -13,25 +13,25 @@ enum SubUnit {
 }
 //data Employee = E Person Salary
 class Employee {
-  constructor(person:Person, salary:Salary) {}
+  constructor(public person:Person, public salary:Salary) {}
 }
 //data Person = P Name Address
 class Person {
-  constructor(name:Name, adress:Address) {}
+  constructor(public name:Name, public adress:Address) {}
 }
 //data Salary = S Float
 class Salary {
-  constructor(salary:number) {}
+  constructor(public salary:number) {}
 }
 //type Manager = Employee
 class Manager {
-  constructor(person:Person, salary:Salary) {}
+  constructor(public person:Person, public salary:Salary) {}
 }
 //type Name = String
 class Name {
-  constructor(name:String) {}
+  constructor(public name:String) {}
 }
 //type Address = String
 class Address {
-  constructor(adress:String) {}
+  constructor(public adress:String) {}
 }

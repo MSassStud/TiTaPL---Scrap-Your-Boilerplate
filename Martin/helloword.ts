@@ -12,9 +12,8 @@ class Dept {
   constructor(public name:Name, public manager:EmployeeOrManager, public subUnit:SubUnit[]) {}
 }
 //data SubUnit = PU Employee | DU Dept
-enum SubUnit {
-  EMPLOYEE,
-  DEPT
+class SubUnit {
+  constructor(public employeeOrDept:Employee|Dept) {}
 }
 //data Employee = E Person Salary
 class Employee implements EmployeeOrManager{

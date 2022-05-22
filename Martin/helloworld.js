@@ -1,3 +1,6 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var lib = require("../Lib/dist/index");
 var Nothing = /** @class */ (function () {
     function Nothing() {
     }
@@ -12,7 +15,13 @@ var Just = /** @class */ (function () {
     };
     return Just;
 }());
-;
+///////////////////////////
+// 3.1 Type Extensions END
+///////////////////////////
+// interface EmployeeOrManager extends Typeable {
+//   person:Person, 
+//   salary:Salary
+// }
 //data Company = C [Dept]
 var Company = /** @class */ (function () {
     function Company(dept) {
@@ -144,10 +153,10 @@ function genCom() {
 // }
 // incE :: Float -> Employee -> Employee
 // incE k (E p s) = E p (incS k s)
-function incE(k, E) {
-    E.salary = incS(k, E.salary);
-    return E;
-}
+// function incE(k:number, E: Employee): Employee {
+//   E.salary = incS(k, E.salary);
+//   return E;
+// }
 // incS :: Float -> Salary -> Salary
 // incS k (S s) = S (s * (1+k))
 function incS(k, S) {
@@ -177,10 +186,10 @@ function mkt(a, b) {
     }
     return null;
 }
-function inc(k, a) {
-    a.gmapT(k);
-    return a;
-}
+// function inc(k:number, a:Typeable) : Typeable {
+//    a.gmapT(k);
+//    return a;
+// }
 ///////////////////////////
 // HelloWorld testing area
 ///////////////////////////
@@ -189,6 +198,7 @@ function inc(k, a) {
 // console.log(JSON.stringify(increase(0.1, company)));
 var company2 = genCom();
 console.log(JSON.stringify(company2));
-console.log(JSON.stringify(inc(0.1, company2)));
+console.log(JSON.stringify(lib.inc(0.1, company2)));
 var a = new Employee(new Person(new Name("Ralf"), new Address("Amsterdam")), new Salary(8000));
 console.log(mkt(a, a));
+//# sourceMappingURL=helloworld.js.map

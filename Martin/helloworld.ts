@@ -1,3 +1,5 @@
+import * as lib from '../Lib/dist/index';
+
 ////////////////////
 // helper START
 ////////////////////
@@ -22,9 +24,7 @@ class Just<T> implements Maybe<T> {
 
 // class Typeable
 // cast :: (Typeable a, Typeable b) => a -> Maybe b
-interface Typeable {
-  gmapT(k:number);
-};
+interface Typeable extends lib.Typeable {}
 
 ///////////////////////////
 // 3.1 Type Extensions END
@@ -151,10 +151,10 @@ return new Company(
 
 // incE :: Float -> Employee -> Employee
 // incE k (E p s) = E p (incS k s)
-function incE(k:number, E: Employee): Employee {
-  E.salary = incS(k, E.salary);
-  return E;
-}
+// function incE(k:number, E: Employee): Employee {
+//   E.salary = incS(k, E.salary);
+//   return E;
+// }
 
 // incS :: Float -> Salary -> Salary
 // incS k (S s) = S (s * (1+k))
@@ -191,10 +191,10 @@ function mkt(a:Typeable, b:Typeable): Typeable|null {
   return null;
 }
 
-function inc(k:number, a:Typeable) : Typeable {
-   a.gmapT(k);
-   return a;
-}
+// function inc(k:number, a:Typeable) : Typeable {
+//    a.gmapT(k);
+//    return a;
+// }
 
 ///////////////////////////
 // HelloWorld testing area
@@ -206,7 +206,7 @@ function inc(k:number, a:Typeable) : Typeable {
 
 let company2 = genCom();
 console.log(JSON.stringify(company2));
-console.log(JSON.stringify(inc(0.1, company2)));
+console.log(JSON.stringify(lib.inc(0.1, company2)));
 
 let a = new Employee(new Person(new Name("Ralf"), new Address("Amsterdam")),new Salary(8000));
 console.log(mkt(a, a));

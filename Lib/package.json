@@ -1,0 +1,10 @@
+{
+  "name": "scrapyourboilerplate",
+  "version": "1.0.0",
+  "description": "Build as study case",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ]
+}

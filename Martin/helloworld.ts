@@ -14,8 +14,8 @@ class Dept implements lib.Dept {
   constructor(public name:lib.Name, public manager:lib.Typeable, public subUnit:lib.SubUnit[]) {}
   gmapT(k: number) {
     this.manager.gmapT(k);
-    this.subUnit.forEach(SU => {
-      SU.gmapT(k);
+    this.subUnit.forEach(sU => {
+      sU.gmapT(k);
     });
   }
 }
@@ -44,15 +44,16 @@ class Employee implements lib.Employee{
 // marlow = E (P "Marlow" "Cambridge") (S 2000)
 // blair = E (P "Blair" "London") (S 100000)
 function genCom() : Company {
-  let ralf:lib.Employee = new Employee({name:{name: "Ralf"},adress:{adress:"Amsterdam"}}, {salary:8000});
-  let joost:lib.Employee = new Employee({name:{name: "Joost"},adress:{adress:"Amsterdam"}}, {salary:1000});
-  let marlow:lib.Employee = new Employee({name:{name: "Marlow"},adress:{adress:"Cambridge"}}, {salary:2000});
-  let blair:lib.Employee = new Employee({name:{name: "Blair"},adress:{adress:"London"}}, {salary:100000});
+  // da typeScript die Strukturen der objekte auf gleichheit vergleicht braucht man hier den new operator nicht um ein Name, Adresse oder Salary zu erstellen
+  let ralf = new Employee({name:{name: "Ralf"},adress:{adress:"Amsterdam"}}, {salary:8000});
+  let joost = new Employee({name:{name: "Joost"},adress:{adress:"Amsterdam"}}, {salary:1000});
+  let marlow = new Employee({name:{name: "Marlow"},adress:{adress:"Cambridge"}}, {salary:2000});
+  let blair = new Employee({name:{name: "Blair"},adress:{adress:"London"}}, {salary:100000});
 
 return new Company(
   [
     new Dept({name:"Research"}, ralf, [new SubUnit(joost), new SubUnit(marlow)]), 
-    new Dept({name:"Strategy"},blair,[])
+    new Dept({name:"Strategy"}, blair, [])
   ]);
 }
 

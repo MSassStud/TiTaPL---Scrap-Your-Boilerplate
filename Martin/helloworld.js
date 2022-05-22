@@ -22,8 +22,8 @@ var Dept = /** @class */ (function () {
     }
     Dept.prototype.gmapT = function (k) {
         this.manager.gmapT(k);
-        this.subUnit.forEach(function (SU) {
-            SU.gmapT(k);
+        this.subUnit.forEach(function (sU) {
+            sU.gmapT(k);
         });
     };
     return Dept;
@@ -57,6 +57,7 @@ var Employee = /** @class */ (function () {
 // marlow = E (P "Marlow" "Cambridge") (S 2000)
 // blair = E (P "Blair" "London") (S 100000)
 function genCom() {
+    // da typeScript die Strukturen der objekte auf gleichheit vergleicht braucht man hier den new operator nicht um ein Name, Adresse oder Salary zu erstellen
     var ralf = new Employee({ name: { name: "Ralf" }, adress: { adress: "Amsterdam" } }, { salary: 8000 });
     var joost = new Employee({ name: { name: "Joost" }, adress: { adress: "Amsterdam" } }, { salary: 1000 });
     var marlow = new Employee({ name: { name: "Marlow" }, adress: { adress: "Cambridge" } }, { salary: 2000 });

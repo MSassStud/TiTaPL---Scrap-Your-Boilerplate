@@ -1,26 +1,88 @@
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var Nothing = /** @class */ (function () {
+    function Nothing() {
+    }
+    return Nothing;
+}());
+var Just = /** @class */ (function () {
+    function Just(value) {
+        this.value = value;
+    }
+    Just.prototype.getValue = function () {
+        return this.value;
+    };
+    return Just;
+}());
+////////////////////
+// helper END
+////////////////////
+///////////////////////
+// 3.1 Type Extensions
+///////////////////////
+// class Typeable
+// cast :: (Typeable a, Typeable b) => a -> Maybe b
+var Typeable = /** @class */ (function () {
+    function Typeable() {
+    }
+    Typeable.prototype.cast = function (b) {
+        console.log(this.getType(), b.getType());
+        if (this.getType() === b.getType()) {
+            return new Just(this);
+        }
+        return new Nothing();
+    };
+    Typeable.prototype.getType = function () {
+        return this.constructor.toString();
+    };
+    return Typeable;
+}());
+;
 //data Company = C [Dept]
-var Company = /** @class */ (function () {
+var Company = /** @class */ (function (_super) {
+    __extends(Company, _super);
     function Company(dept) {
-        this.dept = dept;
+        var _this = _super.call(this) || this;
+        _this.dept = dept;
+        return _this;
     }
     return Company;
-}());
+}(Typeable));
 //data Dept = D Name Manager [SubUnit]
-var Dept = /** @class */ (function () {
+var Dept = /** @class */ (function (_super) {
+    __extends(Dept, _super);
     function Dept(name, manager, subUnit) {
-        this.name = name;
-        this.manager = manager;
-        this.subUnit = subUnit;
+        var _this = _super.call(this) || this;
+        _this.name = name;
+        _this.manager = manager;
+        _this.subUnit = subUnit;
+        return _this;
     }
     return Dept;
-}());
+}(Typeable));
 //data SubUnit = PU Employee | DU Dept
-var SubUnit = /** @class */ (function () {
+var SubUnit = /** @class */ (function (_super) {
+    __extends(SubUnit, _super);
     function SubUnit(employeeOrDept) {
-        this.employeeOrDept = employeeOrDept;
+        var _this = _super.call(this) || this;
+        _this.employeeOrDept = employeeOrDept;
+        return _this;
     }
     return SubUnit;
-}());
+}(Typeable));
 //data Employee = E Person Salary
 var Employee = /** @class */ (function () {
     function Employee(person, salary) {
@@ -123,6 +185,27 @@ function incS(k, S) {
     S.salary = S.salary * (1 + k);
     return S;
 }
+//////////////////
+// HelloWorld
+//////////////////
 var company = genCom();
 console.log(JSON.stringify(company));
-console.log(JSON.stringify(increase(1, company)));
+console.log(JSON.stringify(increase(0.1, company)));
+console.log(company.cast(company.dept[0]));
+console.log(company.dept[0].cast(company));
+//////////////////
+// 3 Our Solution
+//////////////////
+// increase :: Float -> Company -> Company
+// increase k = everywhere (mkT (incS k))
+//cast :: (Typeable a, Typeable b) => a -> Maybe b
+// mkT :: (Typeable a, Typeable b) => (b -> b) -> a -> a
+// mkT f = case cast f of
+//          Just g -> g
+//          Nothing -> id
+function mkt(a, b) {
+    if (a.cast(b)) {
+        return new Just(a);
+    }
+    return new Nothing();
+}

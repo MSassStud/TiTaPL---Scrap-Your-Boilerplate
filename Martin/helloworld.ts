@@ -1,3 +1,45 @@
+////////////////////
+// helper START
+////////////////////
+interface Maybe<T> {}
+
+class Nothing<T> implements Maybe<T> {}
+
+class Just<T> implements Maybe<T> {
+  constructor(private value:T) {}
+  getValue():T|null {
+    return this.value;
+  }
+}
+
+////////////////////
+// helper END
+////////////////////
+
+///////////////////////
+// 3.1 Type Extensions
+///////////////////////
+
+// class Typeable
+// cast :: (Typeable a, Typeable b) => a -> Maybe b
+abstract class Typeable<T>{
+  cast(b:Typeable<any>) : Maybe<T> {
+    console.log(this.getType(), b.getType());
+    if (this.getType() === b.getType()) {
+      return new Just(this);
+    }
+    return new Nothing();
+  }
+
+  getType(): String {
+    return this.constructor.toString();
+  }
+};
+
+///////////////////////////
+// 3.1 Type Extensions END
+///////////////////////////
+
 interface EmployeeOrManager {
   person:Person, 
   salary:Salary
@@ -8,12 +50,12 @@ class Company {
   constructor(public dept:Dept[]) {}
 }
 //data Dept = D Name Manager [SubUnit]
-class Dept {
-  constructor(public name:Name, public manager:EmployeeOrManager, public subUnit:SubUnit[]) {}
+class Dept extends Typeable<Dept> {
+  constructor(public name:Name, public manager:Manager, public subUnit:SubUnit[]) { super(); }
 }
 //data SubUnit = PU Employee | DU Dept
-class SubUnit {
-  constructor(public employeeOrDept:Employee|Dept) {}
+class SubUnit extends Typeable<SubUnit>{
+  constructor(public employeeOrDept:Employee|Dept) { super(); }
 }
 //data Employee = E Person Salary
 class Employee implements EmployeeOrManager{
@@ -109,8 +151,32 @@ function incS(k:number, S:Salary) : Salary {
   return S;
 }
 
+//////////////////
+// HelloWorld
+//////////////////
+
 let company = genCom();
 console.log(JSON.stringify(company));
-console.log(JSON.stringify(increase(1, company)));
+console.log(JSON.stringify(increase(0.1, company)));
 
+//////////////////
+// 3 Our Solution
+//////////////////
+// increase :: Float -> Company -> Company
+// increase k = everywhere (mkT (incS k))
+
+
+//cast :: (Typeable a, Typeable b) => a -> Maybe b
+
+// mkT :: (Typeable a, Typeable b) => (b -> b) -> a -> a
+// mkT f = case cast f of
+//          Just g -> g
+//          Nothing -> id
+
+function mkt(a:Typeable<any>, b:Typeable<any>): Maybe<any> {
+  if(a.cast(b)) {
+    return new Just(a);
+  }
+  return new Nothing();
+}
 

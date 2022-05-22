@@ -30,14 +30,14 @@ interface Typeable {
 // 3.1 Type Extensions END
 ///////////////////////////
 
-interface EmployeeOrManager {
-  person:Person, 
-  salary:Salary
-}
+// interface EmployeeOrManager extends Typeable {
+//   person:Person, 
+//   salary:Salary
+// }
 
 //data Company = C [Dept]
 class Company implements Typeable {
-  constructor(public dept:Dept[]) {}
+  constructor(public dept:Typeable[]) {}
   gmapT(k: number) {
     this.dept.forEach(d => {
       d.gmapT(k);
@@ -46,7 +46,7 @@ class Company implements Typeable {
 }
 //data Dept = D Name Manager [SubUnit]
 class Dept implements Typeable {
-  constructor(public name:Name, public manager:Manager, public subUnit:SubUnit[]) {}
+  constructor(public name:Name, public manager:Typeable, public subUnit:Typeable[]) {}
   gmapT(k: number) {
     this.manager.gmapT(k);
     this.subUnit.forEach(SU => {
@@ -56,14 +56,14 @@ class Dept implements Typeable {
 }
 //data SubUnit = PU Employee | DU Dept
 class SubUnit implements Typeable{
-  constructor(public employeeOrDept:Employee|Dept) {}
+  constructor(public employeeOrDept:Typeable) {}
 
   gmapT(k: number) {
     this.employeeOrDept.gmapT(k);
   }
 }
 //data Employee = E Person Salary
-class Employee implements EmployeeOrManager, Typeable{
+class Employee implements Typeable{
   constructor(public person:Person, public salary:Salary) {}
 
   gmapT(k:number) {
@@ -79,12 +79,12 @@ class Salary {
   constructor(public salary:number) {}
 }
 //type Manager = Employee
-class Manager implements EmployeeOrManager, Typeable {
-  constructor(public person:Person, public salary:Salary) {}
-  gmapT(k: number) {
-    this.salary = incS(k, this.salary);
-  }
-}
+// class Manager implements EmployeeOrManager {
+//   constructor(public person:Person, public salary:Salary) {}
+//   gmapT(k: number) {
+//     this.salary = incS(k, this.salary);
+//   }
+// }
 //type Name = String
 class Name {
   constructor(public name:String) {}
@@ -116,38 +116,38 @@ return new Company(
 
 // increase :: Float -> Company -> Company
 // increase k (C ds) = C (map (incD k) ds)
-function increase(k:number, C:Company) : Company {
-  C.dept.forEach(department => {
-    department = incD(k, department);
-  });
+// function increase(k:number, C:Company) : Company {
+//   C.dept.forEach(department => {
+//     department = incD(k, department);
+//   });
 
-  return C;
-}
+//   return C;
+// }
 
 // incD :: Float -> Dept -> Dept
 // incD k (D nm mgr us) = D nm (incE k mgr) (map (incU k) us)
-function incD(k:number, D:Dept) : Dept {
-  D.subUnit.forEach(subunit => {
-    subunit = incU(k, subunit);
-  });
+// function incD(k:number, D:Dept) : Dept {
+//   D.subUnit.forEach(subunit => {
+//     subunit = incU(k, subunit);
+//   });
 
-  D.manager = incE(k, D.manager);
+//   D.manager = incE(k, D.manager);
 
-  return D;
-}
+//   return D;
+// }
 
 // incU :: Float -> SubUnit -> SubUnit
 // incU k (PU e) = PU (incE k e)
 // incU k (DU d) = DU (incD k d)
-function incU(k:number, SU:SubUnit) : SubUnit {
-  if (SU.employeeOrDept instanceof Employee) {
-    SU.employeeOrDept = incE(k, SU.employeeOrDept);
-    return SU;
-  }
+// function incU(k:number, SU:SubUnit) : SubUnit {
+//   if (SU.employeeOrDept instanceof Employee) {
+//     SU.employeeOrDept = incE(k, SU.employeeOrDept);
+//     return SU;
+//   }
 
-  SU.employeeOrDept = incD(k, SU.employeeOrDept);
-  return SU;
-}
+//   SU.employeeOrDept = incD(k, SU.employeeOrDept);
+//   return SU;
+// }
 
 // incE :: Float -> Employee -> Employee
 // incE k (E p s) = E p (incS k s)
@@ -200,9 +200,9 @@ function inc(k:number, a:Typeable) : Typeable {
 // HelloWorld testing area
 ///////////////////////////
 
-let company = genCom();
-console.log(JSON.stringify(company));
-console.log(JSON.stringify(increase(0.1, company)));
+// let company = genCom();
+// console.log(JSON.stringify(company));
+// console.log(JSON.stringify(increase(0.1, company)));
 
 let company2 = genCom();
 console.log(JSON.stringify(company2));

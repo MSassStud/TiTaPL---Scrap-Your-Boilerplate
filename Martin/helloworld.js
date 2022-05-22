@@ -77,16 +77,12 @@ var Salary = /** @class */ (function () {
     return Salary;
 }());
 //type Manager = Employee
-var Manager = /** @class */ (function () {
-    function Manager(person, salary) {
-        this.person = person;
-        this.salary = salary;
-    }
-    Manager.prototype.gmapT = function (k) {
-        this.salary = incS(k, this.salary);
-    };
-    return Manager;
-}());
+// class Manager implements EmployeeOrManager {
+//   constructor(public person:Person, public salary:Salary) {}
+//   gmapT(k: number) {
+//     this.salary = incS(k, this.salary);
+//   }
+// }
 //type Name = String
 var Name = /** @class */ (function () {
     function Name(name) {
@@ -120,32 +116,32 @@ function genCom() {
 }
 // increase :: Float -> Company -> Company
 // increase k (C ds) = C (map (incD k) ds)
-function increase(k, C) {
-    C.dept.forEach(function (department) {
-        department = incD(k, department);
-    });
-    return C;
-}
+// function increase(k:number, C:Company) : Company {
+//   C.dept.forEach(department => {
+//     department = incD(k, department);
+//   });
+//   return C;
+// }
 // incD :: Float -> Dept -> Dept
 // incD k (D nm mgr us) = D nm (incE k mgr) (map (incU k) us)
-function incD(k, D) {
-    D.subUnit.forEach(function (subunit) {
-        subunit = incU(k, subunit);
-    });
-    D.manager = incE(k, D.manager);
-    return D;
-}
+// function incD(k:number, D:Dept) : Dept {
+//   D.subUnit.forEach(subunit => {
+//     subunit = incU(k, subunit);
+//   });
+//   D.manager = incE(k, D.manager);
+//   return D;
+// }
 // incU :: Float -> SubUnit -> SubUnit
 // incU k (PU e) = PU (incE k e)
 // incU k (DU d) = DU (incD k d)
-function incU(k, SU) {
-    if (SU.employeeOrDept instanceof Employee) {
-        SU.employeeOrDept = incE(k, SU.employeeOrDept);
-        return SU;
-    }
-    SU.employeeOrDept = incD(k, SU.employeeOrDept);
-    return SU;
-}
+// function incU(k:number, SU:SubUnit) : SubUnit {
+//   if (SU.employeeOrDept instanceof Employee) {
+//     SU.employeeOrDept = incE(k, SU.employeeOrDept);
+//     return SU;
+//   }
+//   SU.employeeOrDept = incD(k, SU.employeeOrDept);
+//   return SU;
+// }
 // incE :: Float -> Employee -> Employee
 // incE k (E p s) = E p (incS k s)
 function incE(k, E) {
@@ -181,7 +177,6 @@ function mkt(a, b) {
     }
     return null;
 }
-
 function inc(k, a) {
     a.gmapT(k);
     return a;
@@ -189,13 +184,11 @@ function inc(k, a) {
 ///////////////////////////
 // HelloWorld testing area
 ///////////////////////////
-var company = genCom();
-console.log(JSON.stringify(company));
-console.log(JSON.stringify(increase(0.1, company)));
-
+// let company = genCom();
+// console.log(JSON.stringify(company));
+// console.log(JSON.stringify(increase(0.1, company)));
 var company2 = genCom();
 console.log(JSON.stringify(company2));
 console.log(JSON.stringify(inc(0.1, company2)));
-
 var a = new Employee(new Person(new Name("Ralf"), new Address("Amsterdam")), new Salary(8000));
 console.log(mkt(a, a));

@@ -22,18 +22,8 @@ class Just<T> implements Maybe<T> {
 
 // class Typeable
 // cast :: (Typeable a, Typeable b) => a -> Maybe b
-abstract class Typeable<T>{
-  cast(b:Typeable<any>) : Maybe<T> {
-    console.log(this.getType(), b.getType());
-    if (this.getType() === b.getType()) {
-      return new Just(this);
-    }
-    return new Nothing();
-  }
-
-  getType(): String {
-    return this.constructor.toString();
-  }
+interface Typeable {
+  gmapT(k:number);
 };
 
 ///////////////////////////
@@ -46,20 +36,39 @@ interface EmployeeOrManager {
 }
 
 //data Company = C [Dept]
-class Company {
+class Company implements Typeable {
   constructor(public dept:Dept[]) {}
+  gmapT(k: number) {
+    this.dept.forEach(d => {
+      d.gmapT(k);
+    });
+  }
 }
 //data Dept = D Name Manager [SubUnit]
-class Dept extends Typeable<Dept> {
-  constructor(public name:Name, public manager:Manager, public subUnit:SubUnit[]) { super(); }
+class Dept implements Typeable {
+  constructor(public name:Name, public manager:Manager, public subUnit:SubUnit[]) {}
+  gmapT(k: number) {
+    this.manager.gmapT(k);
+    this.subUnit.forEach(SU => {
+      SU.gmapT(k);
+    });
+  }
 }
 //data SubUnit = PU Employee | DU Dept
-class SubUnit extends Typeable<SubUnit>{
-  constructor(public employeeOrDept:Employee|Dept) { super(); }
+class SubUnit implements Typeable{
+  constructor(public employeeOrDept:Employee|Dept) {}
+
+  gmapT(k: number) {
+    this.employeeOrDept.gmapT(k);
+  }
 }
 //data Employee = E Person Salary
-class Employee implements EmployeeOrManager{
+class Employee implements EmployeeOrManager, Typeable{
   constructor(public person:Person, public salary:Salary) {}
+
+  gmapT(k:number) {
+    this.salary = incS(k, this.salary);
+  }
 }
 //data Person = P Name Address
 class Person {
@@ -70,8 +79,11 @@ class Salary {
   constructor(public salary:number) {}
 }
 //type Manager = Employee
-class Manager implements EmployeeOrManager {
+class Manager implements EmployeeOrManager, Typeable {
   constructor(public person:Person, public salary:Salary) {}
+  gmapT(k: number) {
+    this.salary = incS(k, this.salary);
+  }
 }
 //type Name = String
 class Name {
@@ -152,19 +164,10 @@ function incS(k:number, S:Salary) : Salary {
 }
 
 //////////////////
-// HelloWorld
-//////////////////
-
-let company = genCom();
-console.log(JSON.stringify(company));
-console.log(JSON.stringify(increase(0.1, company)));
-
-//////////////////
 // 3 Our Solution
 //////////////////
 // increase :: Float -> Company -> Company
 // increase k = everywhere (mkT (incS k))
-
 
 //cast :: (Typeable a, Typeable b) => a -> Maybe b
 
@@ -173,10 +176,37 @@ console.log(JSON.stringify(increase(0.1, company)));
 //          Just g -> g
 //          Nothing -> id
 
-function mkt(a:Typeable<any>, b:Typeable<any>): Maybe<any> {
-  if(a.cast(b)) {
-    return new Just(a);
+function cast(a:Typeable, b:Typeable): Typeable|null {
+  if(a.constructor === b.constructor) {
+    return a;
   }
-  return new Nothing();
+  return null;
 }
 
+// Diese Funktion ist miner meinung nicht nötig da die Objekte miteinander verschachtelt sind.
+function mkt(a:Typeable, b:Typeable): Typeable|null {
+  if(cast(a,b) !== null) {
+    return a;
+  }
+  return null;
+}
+
+function inc(k:number, a:Typeable) : Typeable {
+   a.gmapT(k);
+   return a;
+}
+
+///////////////////////////
+// HelloWorld testing area
+///////////////////////////
+
+let company = genCom();
+console.log(JSON.stringify(company));
+console.log(JSON.stringify(increase(0.1, company)));
+
+let company2 = genCom();
+console.log(JSON.stringify(company2));
+console.log(JSON.stringify(inc(0.1, company2)));
+
+let a = new Employee(new Person(new Name("Ralf"), new Address("Amsterdam")),new Salary(8000));
+console.log(mkt(a, a));

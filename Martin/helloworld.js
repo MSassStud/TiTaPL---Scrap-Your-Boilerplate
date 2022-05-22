@@ -1,18 +1,3 @@
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var Nothing = /** @class */ (function () {
     function Nothing() {
     }
@@ -27,68 +12,53 @@ var Just = /** @class */ (function () {
     };
     return Just;
 }());
-////////////////////
-// helper END
-////////////////////
-///////////////////////
-// 3.1 Type Extensions
-///////////////////////
-// class Typeable
-// cast :: (Typeable a, Typeable b) => a -> Maybe b
-var Typeable = /** @class */ (function () {
-    function Typeable() {
-    }
-    Typeable.prototype.cast = function (b) {
-        console.log(this.getType(), b.getType());
-        if (this.getType() === b.getType()) {
-            return new Just(this);
-        }
-        return new Nothing();
-    };
-    Typeable.prototype.getType = function () {
-        return this.constructor.toString();
-    };
-    return Typeable;
-}());
 ;
 //data Company = C [Dept]
-var Company = /** @class */ (function (_super) {
-    __extends(Company, _super);
+var Company = /** @class */ (function () {
     function Company(dept) {
-        var _this = _super.call(this) || this;
-        _this.dept = dept;
-        return _this;
+        this.dept = dept;
     }
+    Company.prototype.gmapT = function (k) {
+        this.dept.forEach(function (d) {
+            d.gmapT(k);
+        });
+    };
     return Company;
-}(Typeable));
+}());
 //data Dept = D Name Manager [SubUnit]
-var Dept = /** @class */ (function (_super) {
-    __extends(Dept, _super);
+var Dept = /** @class */ (function () {
     function Dept(name, manager, subUnit) {
-        var _this = _super.call(this) || this;
-        _this.name = name;
-        _this.manager = manager;
-        _this.subUnit = subUnit;
-        return _this;
+        this.name = name;
+        this.manager = manager;
+        this.subUnit = subUnit;
     }
+    Dept.prototype.gmapT = function (k) {
+        this.manager.gmapT(k);
+        this.subUnit.forEach(function (SU) {
+            SU.gmapT(k);
+        });
+    };
     return Dept;
-}(Typeable));
+}());
 //data SubUnit = PU Employee | DU Dept
-var SubUnit = /** @class */ (function (_super) {
-    __extends(SubUnit, _super);
+var SubUnit = /** @class */ (function () {
     function SubUnit(employeeOrDept) {
-        var _this = _super.call(this) || this;
-        _this.employeeOrDept = employeeOrDept;
-        return _this;
+        this.employeeOrDept = employeeOrDept;
     }
+    SubUnit.prototype.gmapT = function (k) {
+        this.employeeOrDept.gmapT(k);
+    };
     return SubUnit;
-}(Typeable));
+}());
 //data Employee = E Person Salary
 var Employee = /** @class */ (function () {
     function Employee(person, salary) {
         this.person = person;
         this.salary = salary;
     }
+    Employee.prototype.gmapT = function (k) {
+        this.salary = incS(k, this.salary);
+    };
     return Employee;
 }());
 //data Person = P Name Address
@@ -112,6 +82,9 @@ var Manager = /** @class */ (function () {
         this.person = person;
         this.salary = salary;
     }
+    Manager.prototype.gmapT = function (k) {
+        this.salary = incS(k, this.salary);
+    };
     return Manager;
 }());
 //type Name = String
@@ -186,14 +159,6 @@ function incS(k, S) {
     return S;
 }
 //////////////////
-// HelloWorld
-//////////////////
-var company = genCom();
-console.log(JSON.stringify(company));
-console.log(JSON.stringify(increase(0.1, company)));
-console.log(company.cast(company.dept[0]));
-console.log(company.dept[0].cast(company));
-//////////////////
 // 3 Our Solution
 //////////////////
 // increase :: Float -> Company -> Company
@@ -203,9 +168,34 @@ console.log(company.dept[0].cast(company));
 // mkT f = case cast f of
 //          Just g -> g
 //          Nothing -> id
-function mkt(a, b) {
-    if (a.cast(b)) {
-        return new Just(a);
+function cast(a, b) {
+    if (a.constructor === b.constructor) {
+        return a;
     }
-    return new Nothing();
+    return null;
 }
+// Diese Funktion ist miner meinung nicht nötig da die Objekte miteinander verschachtelt sind.
+function mkt(a, b) {
+    if (cast(a, b) !== null) {
+        return a;
+    }
+    return null;
+}
+
+function inc(k, a) {
+    a.gmapT(k);
+    return a;
+}
+///////////////////////////
+// HelloWorld testing area
+///////////////////////////
+var company = genCom();
+console.log(JSON.stringify(company));
+console.log(JSON.stringify(increase(0.1, company)));
+
+var company2 = genCom();
+console.log(JSON.stringify(company2));
+console.log(JSON.stringify(inc(0.1, company2)));
+
+var a = new Employee(new Person(new Name("Ralf"), new Address("Amsterdam")), new Salary(8000));
+console.log(mkt(a, a));

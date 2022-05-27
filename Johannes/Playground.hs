@@ -17,16 +17,26 @@ joost = E (P "Joost" "Amsterdam") (S 1000)
 marlow = E (P "Marlow" "Cambridge") (S 2000)
 blair = E (P "Blair" "London") (S 100000)
 
-x :: Person 
-x = (\(E person _) -> person) blair
 
-y :: Name
-y = (\(P name _) -> name) x
+-- Code for outputting calculated stuff
 
+calculatedSalary :: Salary
+calculatedSalary = (\(E _ salary) -> salary) blair
+
+outputSalary :: Float
+outputSalary = (\(S float) -> float) calculatedSalary
+
+person :: Person
+person = (\(E person _) -> person) blair
+
+personName :: Name
+personName = (\(P name _) -> name) person
 
 
 main :: IO ()
-main = putStrLn $ "The name is: " ++ y
+main = do
+  print personName
+  print outputSalary
 
 -- increase k (C ds) = C (map (incD k) ds)
 -- incD :: Float -> Dept -> Dept

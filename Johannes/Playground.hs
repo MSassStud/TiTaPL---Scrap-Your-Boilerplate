@@ -1,11 +1,11 @@
 
 module Main where
-data Company = C [Dept]
-data Dept = D Name Manager [SubUnit]
-data SubUnit = PU Employee | DU Dept
-data Employee = E Person Salary
-data Person = P Name Address
-data Salary = S Float
+data Company = C [Dept]               deriving Show
+data Dept = D Name Manager [SubUnit]  deriving Show
+data SubUnit = PU Employee | DU Dept  deriving Show
+data Employee = E Person Salary       deriving Show
+data Person = P Name Address          deriving Show
+data Salary = S Float                 deriving Show
 type Manager = Employee
 type Name = String
 type Address = String
@@ -33,10 +33,8 @@ incS k (S s) = S (s * (1+k))
 
 main = print $ increase 0.1 genCom
 
---main :: IO ()    -- This says that main is an IO action.
---main = return () -- This tells main to do nothing.
 
--- Code for outputting calculated stuff
+--  Here is more code for outputting the data of single persons
 
 --calculatedSalary :: Salary
 --calculatedSalary = (\(E _ salary) -> salary) blair

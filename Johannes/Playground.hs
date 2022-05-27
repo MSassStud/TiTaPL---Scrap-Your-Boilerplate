@@ -20,31 +20,33 @@ blair = E (P "Blair" "London") (S 100000)
 
 -- Code for outputting calculated stuff
 
-calculatedSalary :: Salary
-calculatedSalary = (\(E _ salary) -> salary) blair
+--calculatedSalary :: Salary
+--calculatedSalary = (\(E _ salary) -> salary) blair
+--
+--outputSalary :: Float
+--outputSalary = (\(S float) -> float) calculatedSalary
+--
+--person :: Person
+--person = (\(E person _) -> person) blair
+--
+--personName :: Name
+--personName = (\(P name _) -> name) person
+--
+--
+--main :: IO ()
+--main = do
+--  print personName
+--  print outputSalary
 
-outputSalary :: Float
-outputSalary = (\(S float) -> float) calculatedSalary
+increase :: Float -> Company -> Company
 
-person :: Person
-person = (\(E person _) -> person) blair
-
-personName :: Name
-personName = (\(P name _) -> name) person
-
-
-main :: IO ()
-main = do
-  print personName
-  print outputSalary
-
--- increase k (C ds) = C (map (incD k) ds)
--- incD :: Float -> Dept -> Dept
--- incD k (D nm mgr us) = D nm (incE k mgr) (map (incU k) us)
--- incU :: Float -> SubUnit -> SubUnit
--- incU k (PU e) = PU (incE k e)
--- incU k (DU d) = DU (incD k d)
--- incE :: Float -> Employee -> Employee
--- incE k (E p s) = E p (incS k s)
--- incS :: Float -> Salary -> Salary
--- incS k (S s) = S (s * (1+k))
+increase k (C ds) = C (map (incD k) ds)
+incD :: Float -> Dept -> Dept
+incD k (D nm mgr us) = D nm (incE k mgr) (map (incU k) us)
+incU :: Float -> SubUnit -> SubUnit
+incU k (PU e) = PU (incE k e)
+incU k (DU d) = DU (incD k d)
+incE :: Float -> Employee -> Employee
+incE k (E p s) = E p (incS k s)
+incS :: Float -> Salary -> Salary
+incS k (S s) = S (s * (1+k))
